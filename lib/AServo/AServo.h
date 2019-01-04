@@ -8,7 +8,7 @@
 
 ///Максимальное количество сервоприводов
 #ifndef SERVOS_MAX
-#define SERVOS_MAX 4
+#define SERVOS_MAX 5
 #endif
 
 ///Управление сервоприводом для AVR

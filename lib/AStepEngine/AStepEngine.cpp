@@ -1,7 +1,20 @@
 #include "AStepEngine.h"
 
+///Делает паузу в delay мс (работает с переменными)
+inline void _delay_ms_fix(uint8_t delay) {
+  while (delay > 0) {
+    _delay_ms(1);
+    delay--;
+  }
+}
+
 AStepEngine::AStepEngine(EngineType type) {
   engineType = type;
+}
+
+///Устанавливает время задержки шага
+void AStepEngine::setStepTime(uint8_t time) {
+  stepTime = time;
 }
 
 ///Подключение двигателя
@@ -14,6 +27,7 @@ void AStepEngine::attach(EngineMode MODE, volatile uint8_t *PORT, uint8_t A1, ui
   pins[3]     = B2;
   engineMode  = MODE;
   currentStep = 0;
+  stepTime = 5;
 
   /* Настраиваем пины */
   for (uint8_t i = 0; i < 4; i++) {
@@ -22,7 +36,7 @@ void AStepEngine::attach(EngineMode MODE, volatile uint8_t *PORT, uint8_t A1, ui
   }
   /* Делаем первый шаг */
   *port |= (1 << pins[0]);
-  _delay_ms(STEP_DELAY);
+  _delay_ms_fix(stepTime);
   *port &= ~(1 << pins[0]);
 }
 
@@ -49,7 +63,7 @@ void AStepEngine::step(EngineDir direction) {
     else d = currentStep;
     /* Делаем шаг */
     *port |= (1 << pins[d]);
-    _delay_ms(STEP_DELAY);
+    _delay_ms_fix(stepTime);
     *port &= ~(1 << pins[d]);
   }
   /* ------- ПОЛУШАГОВЫЙ РЕЖИМ ------- */

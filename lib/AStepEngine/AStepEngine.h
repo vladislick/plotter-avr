@@ -3,10 +3,6 @@
 
 #define F_CPU       8000000
 
-#ifndef STEP_DELAY
-#define STEP_DELAY  4
-#endif
-
 #include <avr/io.h>
 #include <util/delay.h>
 
@@ -25,6 +21,8 @@ public:
   void attach(EngineMode MODE, volatile uint8_t *PORT, uint8_t A1, uint8_t A2, uint8_t B1, uint8_t B2);
   ///Сделать шаг двигателя в направлении direction
   void step(EngineDir direction);
+  ///Устанавливает время time мс задержки шага
+  void setStepTime(uint8_t time);
 private:
   ///Тип шагового двигателя
   EngineType engineType;
@@ -36,6 +34,8 @@ private:
   uint8_t pins[4];
   ///Номер текущего шага
   volatile uint8_t currentStep;
+  ///Время задержки каждого шага
+  uint8_t stepTime;
 };
 
 #endif

@@ -1,7 +1,6 @@
 /* Автор: Вдовин Владислав (@vladislick) */
 
 #define F_CPU       8000000
-#define STEP_DELAY  4
 #define SERVOS_MAX  4
 
 #include <avr/io.h>
