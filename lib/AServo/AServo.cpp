@@ -5,7 +5,6 @@ uint8_t servos_num = 0;
 uint8_t timer_servo;
 
 ISR(TIMER1_COMPA_vect) {
-
   //Подаём питание на все сервоприводы
   for (uint8_t i = 0; i < servos_num; i++) *servos[i]->port |= (1 << servos[i]->pin);
 

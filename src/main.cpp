@@ -20,7 +20,7 @@
 
 /* Создаём все объекты для работы оборудования */
 ASerial       serial(true);       //Последовательный порт
-AServo        servo(800, 2700);  //Cервопривод
+AServo        servo(800, 2700);   //Cервопривод
 AStepEngine   engine1(BIPOLAR);   //Первый шаговый двигатель
 AStepEngine   engine2(BIPOLAR);   //Второй шаговый двигатель
 
