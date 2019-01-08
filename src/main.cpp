@@ -27,6 +27,12 @@ AServo        servo(800, 2600);   //Cервопривод
 AStepEngine   engineX(BIPOLAR);   //Первый шаговый двигатель
 AStepEngine   engineY(BIPOLAR);   //Второй шаговый двигатель
 
+/* Возвращает модуль числа num */
+int16_t abs(int16_t num) {
+  if (num < 0) return (0 - num);
+  else return num;
+}
+
 int main() {
   /* Задаём переменные для распознавания G-Code*/
   char      str[30];
@@ -35,6 +41,9 @@ int main() {
   uint8_t   mode;
   uint16_t  value[4]; //Хранит числовые значения команд (координаты, номер команды)
   bool      past[4];
+
+  /* Предыдущее значение сервопривода */
+  uint8_t servo_last = 0;
 
   /* Инициализация оборудования станка */
   LED_INIT();
@@ -83,7 +92,16 @@ int main() {
 
         /* Выполняем команду */
         if (past[0]) {
-          if (past[3]) servo.write(value[3]);
+          if (past[3]) {
+            servo.write(value[3]);
+
+            if (abs(servo_last - value[3]) < 40)
+              _delay_ms(120);
+            else
+              _delay_ms(450);
+
+            servo_last = value[3];
+          }
           if (past[1]) if (value[1] <= ENGINEX_MAX) engineX.move(value[1]);
           if (past[2]) if (value[2] <= ENGINEY_MAX) engineY.move(value[2]);
         }
