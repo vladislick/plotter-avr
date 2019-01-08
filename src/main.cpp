@@ -106,7 +106,7 @@ int main() {
           if (past[2]) if (value[2] <= ENGINEY_MAX) engineY.move(value[2]);
         }
 
-        serial.write("OK\n");
+        serial.write('y');
         LED_OFF();
 
         index = 0;
