@@ -23,6 +23,12 @@ public:
   void step(EngineDir direction);
   ///Устанавливает время time мс задержки шага
   void setStepTime(uint8_t time);
+  ///Получить текущую координату
+  uint16_t getCoordinate();
+  ///Установить координату
+  void setCoordinate(uint16_t _coordinate);
+  ///Двигаться до указанной координаты
+  void move(uint16_t _coordinate);
 private:
   ///Тип шагового двигателя
   EngineType engineType;
@@ -36,6 +42,8 @@ private:
   volatile uint8_t currentStep;
   ///Время задержки каждого шага
   uint8_t stepTime;
+  ///Текущая координата
+  uint16_t coordinate;
 };
 
 #endif

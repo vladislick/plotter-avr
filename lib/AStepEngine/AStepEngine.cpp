@@ -101,3 +101,23 @@ void AStepEngine::step(EngineDir direction) {
     for (uint8_t i = 0; i < 4; i++) *port &= ~(1 << pins[i]);
   }
 }
+
+///Получить текущую координату
+uint16_t AStepEngine::getCoordinate() {
+    return coordinate;
+}
+
+///Установить координату
+void AStepEngine::setCoordinate(uint16_t _coordinate) {
+  coordinate = _coordinate;
+}
+
+///Двигаться до указанной координаты
+void AStepEngine::move(uint16_t _coordinate) {
+  if (coordinate > _coordinate) {
+    for (uint16_t i = 0; i < (coordinate - _coordinate); i++) step(BACKWARD);
+  } else if (coordinate < _coordinate) {
+    for (uint16_t i = 0; i < (_coordinate - coordinate); i++) step(FORWARD);
+  }
+  coordinate = _coordinate;
+}

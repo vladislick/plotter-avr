@@ -19,6 +19,7 @@ char ASerial::read() {
 }
 
 void ASerial::write(char data_byte) {
+  while(!(UCSRA & (1 << UDRE)));
   UDR = data_byte;
 }
 

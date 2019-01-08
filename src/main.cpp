@@ -17,33 +17,85 @@
 #define   LED_OFF()   PORTB &= ~(1 << 7)
 #define   LED_ON()    PORTB |= (1 << 7)
 
+/* Максимальное количество шагов */
+#define   ENGINEX_MAX 240
+#define   ENGINEY_MAX 160
+
 /* Создаём все объекты для работы оборудования */
 ASerial       serial(true);       //Последовательный порт
-AServo        servo(800, 2700);   //Cервопривод
-AStepEngine   engine1(BIPOLAR);   //Первый шаговый двигатель
-AStepEngine   engine2(BIPOLAR);   //Второй шаговый двигатель
+AServo        servo(800, 2600);   //Cервопривод
+AStepEngine   engineX(BIPOLAR);   //Первый шаговый двигатель
+AStepEngine   engineY(BIPOLAR);   //Второй шаговый двигатель
 
 int main() {
+  /* Задаём переменные для распознавания G-Code*/
+  char      str[30];
+  char      data;
+  uint8_t   index = 0;
+  uint8_t   mode;
+  uint16_t  value[4]; //Хранит числовые значения команд (координаты, номер команды)
+  bool      past[4];
+
   /* Инициализация оборудования станка */
   LED_INIT();
   serial.begin(9600);
   servo.attach(&PORTB, 6);
-  engine1.attach(HALF, &PORTC, 0, 1, 2, 3);
-  engine2.attach(HALF, &PORTD, 7, 6, 5, 4);
-  engine1.setStepTime(4);
-  engine2.setStepTime(4);
+  engineX.attach(STANDART, &PORTD, 7, 6, 5, 4);
+  engineY.attach(STANDART, &PORTC, 0, 1, 2, 3);
+  engineX.setStepTime(4);
+  engineY.setStepTime(4);
+  engineX.setCoordinate(0);
+  engineY.setCoordinate(0);
 
   /* Разрешаем глобалные прерывания */
   sei();
 
   while(1) {
-    servo.write(120);
-    for (uint16_t i = 0; i < 320; i++) engine1.step(FORWARD);
-    for (uint16_t i = 0; i < 480; i++) engine2.step(FORWARD);
-    _delay_ms(100);
-    servo.write(60);
-    for (uint16_t i = 0; i < 320; i++) engine1.step(BACKWARD);
-    for (uint16_t i = 0; i < 480; i++) engine2.step(BACKWARD);
-    _delay_ms(100);
+    if (serial.isAvailable()) {
+      data = serial.read();
+      if (data == '\0' || data == '\n') {
+        /* Включаем светодиод */
+        LED_ON();
+
+        /* Распознаём команду */
+        past[0] = past[1] = past[2] = past[3] = false;
+        for (uint8_t i = 0; i < index; i++) {
+          if (str[i] == 'G') {
+            mode = 0;
+            value[mode] = 0;
+            past[0] = true;
+          } else if (str[i] == 'X') {
+            mode = 1;
+            value[mode] = 0;
+            past[1] = true;
+          } else if (str[i] == 'Y') {
+            mode = 2;
+            value[mode] = 0;
+            past[2] = true;
+          } else if (str[i] == 'Z') {
+            mode = 3;
+            value[mode] = 0;
+            past[3] = true;
+          } else if (str[i] > 47 && str[i] < 58) {
+            value[mode] = (value[mode] * 10) + (str[i] - 48);
+          }
+        }
+
+        /* Выполняем команду */
+        if (past[0]) {
+          if (past[3]) servo.write(value[3]);
+          if (past[1]) if (value[1] <= ENGINEX_MAX) engineX.move(value[1]);
+          if (past[2]) if (value[2] <= ENGINEY_MAX) engineY.move(value[2]);
+        }
+
+        serial.write("OK\n");
+        LED_OFF();
+
+        index = 0;
+      } else {
+        str[index] = data;
+        index++;
+      }
+    }
   }
 }
