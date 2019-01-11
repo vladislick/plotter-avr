@@ -34,7 +34,7 @@ int16_t abs(int16_t num) {
 }
 
 int main() {
-  /* Задаём переменные для распознавания G-Code*/
+  /* Задаём переменные для распознавания G-Code */
   char      str[30];
   char      data;
   uint8_t   index = 0;
@@ -51,8 +51,8 @@ int main() {
   servo.attach(&PORTB, 6);
   engineX.attach(STANDART, &PORTD, 7, 6, 5, 4);
   engineY.attach(STANDART, &PORTC, 0, 1, 2, 3);
-  engineX.setStepTime(4);
-  engineY.setStepTime(4);
+  engineX.setStepTime(3);
+  engineY.setStepTime(6);
   engineX.setCoordinate(0);
   engineY.setCoordinate(0);
 
@@ -92,6 +92,18 @@ int main() {
 
         /* Выполняем команду */
         if (past[0]) {
+          /* Если это команда включения режима удержания позиции */
+          if (value[0] == 1) {
+            engineX.setPositionHolding(1);
+            //engineY.setPositionHolding(1);
+          }
+          /* Если это команда выключения режима удержания позиции */
+          else if (value[0] == 2) {
+            engineX.setPositionHolding(0);
+            //engineY.setPositionHolding(0);
+          }
+
+          /* Если нужно поменять текущее значение оси Z */
           if (past[3]) {
             servo.write(value[3]);
 
@@ -102,7 +114,9 @@ int main() {
 
             servo_last = value[3];
           }
+          /* Если нужно поменять текущее значение оси X */
           if (past[1]) if (value[1] <= ENGINEX_MAX) engineX.move(value[1]);
+          /* Если нужно поменять текущее значение оси Y */
           if (past[2]) if (value[2] <= ENGINEY_MAX) engineY.move(value[2]);
         }
 

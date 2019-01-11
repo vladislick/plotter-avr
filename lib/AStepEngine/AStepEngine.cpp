@@ -40,9 +40,29 @@ void AStepEngine::attach(EngineMode MODE, volatile uint8_t *PORT, uint8_t A1, ui
   *port &= ~(1 << pins[0]);
 }
 
+void AStepEngine::setPositionHolding(bool positionmode) {
+  positionHolding = positionmode;
+  /* Узнаём реальный пин */
+  uint8_t d;
+  if (engineType == BIPOLAR) {
+    if (currentStep == 0) d = 0;
+    else if (currentStep == 1) d = 2;
+    else if (currentStep == 2) d = 1;
+    else if (currentStep == 3) d = 3;
+  }
+  else d = currentStep;
+  /* Включаем или отключаем пин */
+  if (positionHolding) {
+    *port |= (1 << pins[d]);
+  } else {
+    *port &= ~(1 << pins[d]);
+  }
+}
+
 ///Сделать шаг двигателя в направлении direction
 void AStepEngine::step(EngineDir direction) {
   uint8_t d;
+  static uint8_t last_d = 2;
   /* ------- ПОЛНОШАГОВЫЙ РЕЖИМ ------- */
   if (engineMode == STANDART) {
     /* Переключаем текущий шаг */
@@ -53,6 +73,7 @@ void AStepEngine::step(EngineDir direction) {
       if (currentStep > 0) currentStep--;
       else currentStep = 3;
     }
+
     /* Даём d реальный номер пина */
     if (engineType == BIPOLAR) {
       if (currentStep == 0) d = 0;
@@ -61,10 +82,16 @@ void AStepEngine::step(EngineDir direction) {
       else if (currentStep == 3) d = 3;
     }
     else d = currentStep;
+
+    /* Выключаем обмотку */
+    if (positionHolding) *port &= ~(1 << pins[last_d]);
+
     /* Делаем шаг */
     *port |= (1 << pins[d]);
     _delay_ms_fix(stepTime);
-    *port &= ~(1 << pins[d]);
+    if (!positionHolding) *port &= ~(1 << pins[d]);
+
+    last_d = d;
   }
   /* ------- ПОЛУШАГОВЫЙ РЕЖИМ ------- */
   else if (engineMode == HALF) {

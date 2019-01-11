@@ -29,6 +29,8 @@ public:
   void setCoordinate(uint16_t _coordinate);
   ///Двигаться до указанной координаты
   void move(uint16_t _coordinate);
+  ///Установить режим удержания позиции (ВКЛ/ВЫКЛ)
+  void setPositionHolding(bool positionmode);
 private:
   ///Тип шагового двигателя
   EngineType engineType;
@@ -44,6 +46,8 @@ private:
   uint8_t stepTime;
   ///Текущая координата
   uint16_t coordinate;
+  ///Режим удерживания текущей позиции
+  bool positionHolding = 0;
 };
 
 #endif
