@@ -51,7 +51,7 @@ int main() {
   servo.attach(&PORTB, 6);
   engineX.attach(STANDART, &PORTD, 7, 6, 5, 4);
   engineY.attach(STANDART, &PORTC, 0, 1, 2, 3);
-  engineX.setStepTime(2);
+  engineX.setStepTime(3);
   engineY.setStepTime(3);
   engineX.setCoordinate(0);
   engineY.setCoordinate(0);
@@ -94,25 +94,19 @@ int main() {
         if (past[0]) {
           /* Если это команда включения режима удержания позиции */
           if (value[0] == 1) {
-            engineX.setPositionHolding(1);
-            //engineY.setPositionHolding(1);
+            //engineX.setPositionHolding(1);
+            engineY.setPositionHolding(1);
           }
           /* Если это команда выключения режима удержания позиции */
           else if (value[0] == 2) {
-            engineX.setPositionHolding(0);
-            //engineY.setPositionHolding(0);
+            //engineX.setPositionHolding(0);
+            engineY.setPositionHolding(0);
           }
 
           /* Если нужно поменять текущее значение оси Z */
           if (past[3]) {
             servo.write(value[3]);
-
-            if (abs(servo_last - value[3]) < 50)
-              _delay_ms(100);
-            else
-              _delay_ms(300);
-
-            servo_last = value[3];
+            _delay_ms(300);
           }
           /* Если нужно поменять текущее значение оси X */
           if (past[1]) if (value[1] <= ENGINEX_MAX) engineX.move(value[1]);
