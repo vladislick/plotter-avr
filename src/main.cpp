@@ -51,8 +51,8 @@ int main() {
   servo.attach(&PORTB, 6);
   engineX.attach(STANDART, &PORTD, 7, 6, 5, 4);
   engineY.attach(STANDART, &PORTC, 0, 1, 2, 3);
-  engineX.setStepTime(3);
-  engineY.setStepTime(6);
+  engineX.setStepTime(2);
+  engineY.setStepTime(3);
   engineX.setCoordinate(0);
   engineY.setCoordinate(0);
 
@@ -107,10 +107,10 @@ int main() {
           if (past[3]) {
             servo.write(value[3]);
 
-            if (abs(servo_last - value[3]) < 40)
-              _delay_ms(120);
+            if (abs(servo_last - value[3]) < 50)
+              _delay_ms(100);
             else
-              _delay_ms(450);
+              _delay_ms(300);
 
             servo_last = value[3];
           }
