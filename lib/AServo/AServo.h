@@ -1,12 +1,14 @@
 #ifndef ASERVO_H
 #define ASERVO_H
 
-#define F_CPU       8000000
+#ifndef F_CPU
+#define F_CPU 8000000
+#endif
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-///Максимальное количество сервоприводов
+///Максимальное количество сервоприводов (по умолчанию 5)
 #ifndef SERVOS_MAX
 #define SERVOS_MAX 5
 #endif
