@@ -1,7 +1,7 @@
 #include "AStepEngine.h"
 
 ///Делает паузу в delay мс (работает с переменными)
-inline void _delay_ms_fix(uint8_t delay) {
+inline void _delay_ms_fix(uint16_t delay) {
   while (delay > 0) {
     _delay_ms(1);
     delay--;
@@ -15,6 +15,11 @@ AStepEngine::AStepEngine(EngineType type) {
 ///Устанавливает время задержки шага
 void AStepEngine::setStepTime(uint8_t time) {
   stepTime = time;
+}
+
+///Возвращает время time мс задержки шага
+uint8_t AStepEngine::getStepTime() {
+  return stepTime;
 }
 
 ///Подключение двигателя

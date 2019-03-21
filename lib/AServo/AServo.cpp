@@ -22,7 +22,7 @@ ISR(TIMER1_COMPA_vect) {
     }
   } while(!completed);
 
-  OCR1B = F_CPU/64000 * servos[0]->timeCurrent / 1000;
+  OCR1B = F_CPU/64000 * (long)servos[0]->timeCurrent / 1000;
   timer_servo = 0;
 }
 

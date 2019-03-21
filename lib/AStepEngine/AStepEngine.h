@@ -13,6 +13,8 @@ enum EngineMode { STANDART, HALF };
 ///Направление шага: вперёд, назад
 enum EngineDir { FORWARD, BACKWARD};
 
+inline void _delay_ms_fix(uint16_t);
+
 ///Последовательный порт
 class AStepEngine {
 public:
@@ -23,6 +25,8 @@ public:
   void step(EngineDir direction);
   ///Устанавливает время time мс задержки шага
   void setStepTime(uint8_t time);
+  ///Возвращает время time мс задержки шага
+  uint8_t getStepTime();
   ///Получить текущую координату
   uint16_t getCoordinate();
   ///Установить координату
