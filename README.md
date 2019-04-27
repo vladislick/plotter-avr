@@ -9,3 +9,5 @@ To compile it I use PlatformIO framework
 ![project image 2](https://github.com/vladislick/plotter-avr/raw/master/photos/firstlook2.jpg)
 
 ![project image 3](https://github.com/vladislick/plotter-avr/raw/master/photos/firstlook3.jpg)
+
+More photos you can find in the "photos" folder in the project
